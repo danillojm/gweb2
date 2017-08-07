@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="head">
+	</ui:define>
+
+	<ui:define name="subheader">
+        VVS Vendas (TIM PDV) 
+    </ui:define>
+
+	<ui:define name="content">
+		<h:form id="frmRelVVSVendas" enctype="multipart/form-data">
+			<p:blockUI block="tudo" widgetVar="blockDoSistema2" />
+			<p:poll interval="3" widgetVar="pollChecaRetorno" update="@form, :frmRelVVSVendas:tbRelatorio"  autoStart="false" onstart="PF('blockDoSistema2').show()" oncomplete="if (#{vVSVendasRel.teveRetorno}) {PF('pollChecaRetorno').stop();PF('blockDoSistema2').hide()}" />
+			
+			<div class="EmptyBox5" />
+			<p:focus />
+			<p:growl id="growl" showDetail="true" life="5000" showSummary="false" severity="info, warn" />
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" redisplay="false" />
+			<p:accordionPanel multiple="true" widgetVar="acoParam" styleClass="accordionParam ShadowEffect">
+				<p:tab title="Parâmetros" >
+					<f:facet name="title">
+						<h:outputText value="Parâmetros" style="font-size: 18px !important" />
+						<div style="float: right; margin-top: -8px !important;">
+							<p:commandButton value="Executar" style="margin-right: 5px !important" update=":frmRelVVSVendas:tbRelatorio" styleClass="GreenButton" icon="fa fa-play Fs14 White" actionListener="#{vVSVendasRel.executarRelatorio()}"
+								oncomplete="PF('acoParam').unselect(0);PF('pollChecaRetorno').start();PF('blockDoSistema2').show()"
+							/>
+							<p:menuButton value="Exportar">
+								<p:menuitem value="Excel" icon="fa fa-file-excel-o Fs16" ajax="false">
+									<p:dataExporter type="xls" encoding="iso-8859-1" target=":frmRelVVSVendas:tbRelatorio" postProcessor="#{vVSVendasRel.postProcessXLS}" fileName="#{vVSVendasRel.nomeArquivoRelatorio}" />
+								</p:menuitem>
+								<p:menuitem value="CSV" icon="fa fa-file-text-o Fs16" ajax="false">
+									<p:dataExporter type="csv" encoding="iso-8859-1" target=":frmRelVVSVendas:tbRelatorio" fileName="#{vVSVendasRel.nomeArquivoRelatorio}" />
+								</p:menuitem>
+							</p:menuButton>
+						</div>
+					</f:facet>
+
+					<p:panel id="pnParam" styleClass="ui-noborder Container100">
+						<div class="campoForm DispInlBlock">
+							<p:outputLabel value="Dia Inicial" for="diaInicio" />
+							<div class="EmptyBox5" />
+							<p:calendar id="diaInicio" widgetVar="diaInicioVar" locale="pt" value="#{vVSVendasRel.datInicio}" showOn="button" pattern="dd/MM/yyyy">
+								<p:ajax event="dateSelect" />
+							</p:calendar>
+						</div>
+						<div class="campoForm DispInlBlock">
+							<p:outputLabel value="Dia Final" for="diaFinal" />
+							<div class="EmptyBox5" />
+							<p:calendar id="diaFinal" widgetVar="diaFinalVar" locale="pt" value="#{vVSVendasRel.datFim}" showOn="button" pattern="dd/MM/yyyy">
+								<p:ajax event="dateSelect" />
+							</p:calendar>
+						</div>
+					</p:panel>
+				</p:tab>
+			</p:accordionPanel>
+			<p:panel id="pnRel" header="Relatório" styleClass="panelRelatorio Container100 ShadowEffect ui-noborder" style="padding: 0px !important;">
+
+				<p:dataTable id="tbRelatorio" styleClass="slim ui-noborder" emptyMessage="Sem registros..." var="registroVar" value="#{vVSVendasRel.registros}" rowKey="#{registroVar.id}" selection="false" filteredValue="#{vVSVendasRel.registrosFiltro}" reflow="true" paginator="true"
+					currentPageReportTemplate="({currentPage} de {totalPages})" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" paginatorAlwaysVisible="false" rows="50" rowsPerPageTemplate="50,100,200,300,500"
+					widgetVar="registroVarW"
+				>
+
+					<p:column sortBy="#{registroVar.idDistribuidor}" headerText="ID DB" filterBy="#{registroVar.idDistribuidor}">
+						<h:outputText value="#{registroVar.idDistribuidor}" style="float:right"/>
+					</p:column>
+					<p:column sortBy="#{registroVar.nomDistribuidor}" headerText="Nome DB" filterBy="#{registroVar.nomDistribuidor}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.nomDistribuidor}" />
+					</p:column>
+					<p:column sortBy="#{registroVar.idVendedorLogin}" headerText="Cód Vendedor" filterBy="#{registroVar.idVendedorLogin}">
+						<h:outputText value="#{registroVar.idVendedorLogin}" style="float:right"/>
+					</p:column>
+					<p:column sortBy="#{registroVar.nomVendedor}" headerText="Nome Vendedor" width="25%" filterBy="#{registroVar.nomVendedor}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.nomVendedor}" />
+					</p:column>
+					<p:column sortBy="#{registroVar.datTransacao}" headerText="Data" filterBy="#{registroVar.datTransacao}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.datTransacao}" />
+					</p:column>
+					<p:column sortBy="#{registroVar.idPontoVenda}" headerText="Cód. PDV" filterBy="#{registroVar.idPontoVenda}">
+						<h:outputText value="#{registroVar.idPontoVenda}" style="float:right"/>
+					</p:column>
+					<p:column sortBy="#{registroVar.nomPdv}" headerText="Nome PDV" filterBy="#{registroVar.nomPdv}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.nomPdv}" />
+					</p:column>
+					<p:column sortBy="#{registroVar.vlrSaldoTransacao}" headerText="Saldo VVS" filterBy="#{registroVar.vlrSaldoTransacao}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.vlrSaldoTransacaoString}" style="float:right"/>
+					</p:column>
+					<p:column sortBy="#{registroVar.vlrVendaBruta}" headerText="Valor" filterBy="#{registroVar.vlrVendaBruta}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.vlrVendaBrutaString}" style="float:right"/>
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+
+
+
+		</h:form>
+
+		<div class="EmptyBox20" />
+	</ui:define>
+
+</ui:composition>

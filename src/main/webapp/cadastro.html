@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html ng-app="cadastro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home</title>
+
+<link rel="stylesheet" type="text/css"
+	href="resources/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="resources/css/style.css">
+</head>
+<body>
+
+
+	<header class="header">
+
+		<div class="container">
+
+			<a href="index.html" class="grid-3"> <img src=" "
+				class="img-logo"></a>
+
+
+			<nav class="header-menu  col-lg-9 ">
+				<ul>
+					<li><a href="">Home</a></li>
+					<li><a href="">Sobre</a></li>
+					<li><a href="">Contato</a></li>
+					<li><a href="">Login</a></li>
+				</ul>
+
+			</nav>
+
+
+		</div>
+
+	</header>
+	<section class="cadastramento" ng-controller="cadastrarController">
+
+		<div class="container">
+			<ol class="breadcrumb">
+				<li><a href="index.html">Home</a></li>
+				<li class="active">Cadastro</li>
+			</ol>
+			<!-- <footer class="row">
+				<div class="col-sm-6">
+					<button class="btn btn-primary" data-toggle="modal"
+						data-target="#teste">Cadastro</button>
+				</div>
+			</footer> -->
+
+			<div class="list-group-item-text">
+				<p></p>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading"> Dados Pessoais</div>  
+				<div class="panel-body">
+
+					<form action="">
+						<div class="row">
+							<div class="form-group col-sm-4">
+								<label for="nome">Nome</label> <input type="text"
+									placeholder="Nome completo" class="form-control"
+									ng-model="aluno.nome">
+
+							</div>
+							<div class="form-group col-sm-2">
+								<label for="sexo">sexo</label> <select id="sexo"
+									class="form-control" ng-model="aluno.sexo">
+									<option value="">Selecione</option>
+									<option value="m">Masculino</option>
+									<option value="f">Feminino</option>
+								</select>
+							</div>
+							<div class="form-group col-sm-3">
+								<label for="dat_nasc">Data de nascimento</label> <input
+									type="date" id="dat_nasc" class="form-control"
+									ng-model="aluno.datNasc">
+							</div>
+							<div class="form-group col-sm-3">
+								<label for="estado_civil">Estado civil</label> <input
+									type="text" class="form-control" id="estado_civil"
+									ng-model="aluno.estadoCivil">
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="form-group col-sm-2">
+								<label for="cpf">Cpf</label> <input type="text"
+									placeholder="Cpf" class="form-control" ng-model="aluno.cpf">
+							</div>
+
+							<div class="form-group col-sm-2">
+								<label for="rg">Rg</label> <input type="text" placeholder="RG"
+									class="form-control" ng-model="aluno.rg">
+							</div>
+
+						 
+
+							<div class="form-group col-sm-3">
+								<label for="nom_pai">Nome do pai</label> <input type="text"
+									class="form-control" id="nom_pai" ng-model="aluno.nomPai">
+							</div>
+							<div class="form-group col-sm-3">
+								<label for="nom_mae">Nome da Mãe</label> <input type="text"
+									class="form-control" id="nom_mae" ng-model="aluno.nomMae">
+							</div>
+						</div>
+
+
+					</form>
+				</div>
+			</div>
+
+			<div class="panel panel-default">
+				<div class="panel-heading  painel-color">Informações academicas</div>
+				<div class="panel-body">
+
+					<form>
+						<div class="row">
+							<div class="form-group col-sm-4">
+								<label for="instituicao_ensino">Instituicao de ensino</label> <input
+									type="text" class="form-control" id="instituicao_ensino"
+									ng-model="aluno.formacao_academica.instituicao_ensino">
+							</div>
+
+							<div class="form-group col-sm-3">
+								<label for="curso">curso</label> <input type="text"
+									class="form-control" id="curso"
+									ng-model="aaluno.formacao_academica.curso">
+							</div>
+							<div class="form-group col-sm-3">
+								<label for="matricula">matricula</label> <input type="text"
+									class="form-control" id="matricula"
+									ng-model="aluno.formacao_academica.matricula">
+							</div>
+
+						</div>
+
+						<div class="row"">
+							<div class="form-group col-sm-3">
+								<label for="anoIngresso">Ano ingresso</label> <input type="text"
+									class="form-control" id="anoIngresso"
+									ng-model="aluno.formacao_academica.anoIngresso">
+							</div>
+							<div class="form-group col-sm-3">
+								<label for="semestre_inicial">Semestre inicial</label> <input
+									type="text" class="form-control" id="semestre_inicial"
+									ng-model="aluno.formacao_academica.semestre_inicial">
+							</div>
+
+						</div>
+						<button class="btn btn-success" ng-click="salvar(aluno)">salvar</button>
+					</form>
+
+				</div>
+			</div>
+
+
+			<div class="panel panel-default">
+				<div class="panel-heading  ">Contato</div>
+				<div class="panel-body"></div>
+				<form action="">
+
+					<div class="row">
+
+						<div class="form-group col-sm-3">
+							<label for="numero_contato">Contato</label> <input type="text"
+								class="form-control" id="nom_pai"
+								ng-model="aluno.numero_contato">
+						</div>
+
+						<div class="form-group col-sm-3">
+							<label for="email">E-mail</label> <input type="text"
+								class="form-control" id="email" ng-model="aluno">
+						</div>
+
+					</div>
+
+				</form>
+			</div>
+
+
+
+
+
+
+
+
+		</div>
+
+	</section>
+
+
+	<div class="modal fade" id="teste">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Acessar o sistema</h4>
+				</div>
+				<form>
+
+					<div class="modal-body">
+						<div class="row">
+							<div class="form-group col-sm-5">
+								<label for="select">select</label> <select id="select"
+									class="form-control">
+									<option value="1">Danillo </option>
+									<option value="2">Melo </option>
+									<option value="3">Maria </option>
+									<option value="4">João </option>
+
+								</select>
+							</div>
+							<div class="form-group col-sm-7">
+								<label for="select">select</label> <select id="select"
+									class="form-control">
+									<option value="1">Danillo </option>
+									<option value="2">Melo </option>
+									<option value="3">Maria </option>
+									<option value="4">João </option>
+
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="reset" class="btn btn-danger">Limpar</button>
+						<button type="reset" class="btn btn-success">Enviar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+	</div>
+
+
+	<script src="resources/js/angular.min.js"></script>
+	<script src="resources/js/cadastro.js"></script>
+	<script src="resources/js/jquery-3.2.1.min.js"></script>
+	<script src="resources/js/bootstrap.min.js"></script>
+
+</body>
+</html>

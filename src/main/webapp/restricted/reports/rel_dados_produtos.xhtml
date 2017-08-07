@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="head">
+	</ui:define>
+
+	<ui:define name="subheader">
+        Dados dos produtos
+    </ui:define>
+
+	<ui:define name="content">
+		<h:form id="frmRelDadosProdutos" enctype="multipart/form-data">
+			<div class="EmptyBox5" />
+			<p:focus />
+			<p:growl id="growl" showDetail="true" life="5000" showSummary="false" severity="info, warn" />
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" redisplay="false" />
+			<p:panel id="pnRel" header="Relatório" styleClass="panelRelatorio Container100 ShadowEffect ui-noborder" style="padding: 0px !important;">
+					<f:facet name="header">
+						<h:outputText value="" style="font-size: 18px !important" />
+						<div style="float: right; margin-top: -10px !important">
+							
+							<p:menuButton value="Exportar">
+								<p:menuitem value="Excel" icon="fa fa-file-excel-o Fs16" ajax="false">
+									<p:dataExporter type="xls" encoding="iso-8859-1" target=":frmRelDadosProdutos:tbRelatorio" postProcessor="#{dadosProdutosRel.postProcessXLS}" fileName="#{dadosProdutosRel.nomeArquivoRelatorio}" />
+								</p:menuitem>
+								<p:menuitem value="CSV" icon="fa fa-file-text-o Fs16" ajax="false">
+									<p:dataExporter type="csv" encoding="iso-8859-1" target=":frmRelDadosProdutos:tbRelatorio" fileName="#{dadosProdutosRel.nomeArquivoRelatorio}" />
+								</p:menuitem>
+								<p:menuitem value="PDF" icon="fa fa-file-text-o Fs16" ajax="false" action="#{dadosProdutosRel.getArquivoPDF()}">
+								</p:menuitem>
+							</p:menuButton>
+						</div>
+					</f:facet>
+				<p:dataTable id="tbRelatorio" styleClass="slim ui-noborder" emptyMessage="Sem registros..." var="registroVar" value="#{dadosProdutosRel.dadosProdutosDS.registros}" rowKey="#{registroVar.id}" selection="false"
+				filteredValue="#{dadosProdutosRel.registrosFiltrados}" reflow="true" paginator="false" widgetVar="registroVarW" >
+					<p:column sortBy="#{registroVar.id}" headerText="Cód." width="10%" filterBy="#{registroVar.id}">
+						<h:outputText value="#{registroVar.id}" />
+					</p:column>
+
+					<p:column sortBy="#{registroVar.nomProduto}" headerText="Nome Produto" width="20%" filterBy="#{registroVar.nomProduto}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.nomProduto}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.nomCategoria}" headerText="Categoria" width="10%" style="text-align : right" filterBy="#{registroVar.nomCategoria}">
+						<h:outputText value="#{registroVar.nomCategoria}" />
+					</p:column>
+
+					<p:column sortBy="#{registroVar.idCcCompra}" headerText="Cód." width="10%" style="text-align : right" filterBy="#{registroVar.idCcCompra}">
+						<h:outputText value="#{registroVar.idCcCompra}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.nomCcCompra}" headerText="Nome CC Compra" width="20%" style="text-align : right" filterBy="#{registroVar.nomCcCompra}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.nomCcCompra}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.idCcVenda}" headerText="Cód." width="10%" style="text-align : right" filterBy="#{registroVar.idCcVenda}">
+						<h:outputText value="#{registroVar.idCcVenda}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.nomCcVenda}" headerText="Nome CC Venda" width="20%" style="text-align : right" filterBy="#{registroVar.nomCcVenda}" filterMatchMode="contains">
+						<h:outputText value="#{registroVar.nomCcVenda}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.nomNCM}" headerText="Cód. NCM" width="10%" style="text-align : right" filterBy="#{registroVar.nomNCM}">
+						<h:outputText value="#{registroVar.nomNCM}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.codFaturamento}" headerText="Cód. Fat" exportable="true" width="10%" style="text-align : right" filterBy="#{registroVar.codFaturamento}">
+						<h:outputText value="#{registroVar.codFaturamento}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.vlrCustoProdutoString}" headerText="Valor Custo" width="10%" style="text-align : right" filterBy="#{registroVar.vlrCustoProdutoString}">
+						<h:outputText value="#{registroVar.vlrCustoProdutoString}" />
+					</p:column>
+					
+				</p:dataTable>
+
+			</p:panel>
+
+
+
+		</h:form>
+
+		<div class="EmptyBox20" />
+	</ui:define>
+
+</ui:composition>

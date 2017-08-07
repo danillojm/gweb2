@@ -1,0 +1,175 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="subheader">
+        Previsão de Compras
+    </ui:define>
+
+	<ui:define name="content">
+		<h:form id="frmRelPrevisaoCompras">
+			<div class="EmptyBox5" />
+			<p:growl id="messages" showDetail="true" life="500000" showSummary="false" severity="info, warn, error" />
+			<p:accordionPanel multiple="true" widgetVar="acoParam" styleClass="accordionParam ShadowEffect">
+				<p:tab title="Parâmetros" >
+					<f:facet name="title">
+						<h:outputText value="Parâmetros" style="font-size: 18px !important" />
+						<div style="float: right; margin-top: -8px !important;">
+							<p:commandButton value="Executar" 
+								style="margin-right: 5px !important" 
+								update=":frmRelPrevisaoCompras:tbRelatorio, :frmRelPrevisaoCompras:messages" 
+								styleClass="GreenButton" 
+								icon="fa fa-play Fs14 White" 
+								actionListener="#{previsaoComprasRel.executar}"
+								oncomplete="PF('tbRelatorioVar').isEmpty() ? PF('acoParam').select(0) : PF('acoParam').unselect(0)" />
+							<p:menuButton value="Exportar">
+								<p:menuitem value="Excel" icon="fa fa-file-excel-o Fs16" ajax="false">
+									<p:dataExporter type="xls" encoding="iso-8859-1" target=":frmRelPrevisaoCompras:tbRelatorio" postProcessor="#{previsaoComprasRel.postProcessXLS}" fileName="#{previsaoComprasRel.nomeArquivoRelatorio}" />
+								</p:menuitem>
+								<p:menuitem value="CSV" icon="fa fa-file-text-o Fs16" ajax="false">
+									<p:dataExporter type="csv" encoding="iso-8859-1" target=":frmRelPrevisaoCompras:tbRelatorio" fileName="#{previsaoComprasRel.nomeArquivoRelatorio}" />
+								</p:menuitem>
+							</p:menuButton>
+						</div>
+					</f:facet>
+					<p:panel id="pnParam" styleClass="ui-noborder Container100">
+						<p:selectCheckboxMenu id="empresasFiltro" 
+							value="#{previsaoComprasRel.listEmpresaAux}" 
+							label="#{previsaoComprasRel.lbEmpresaFiltro}"
+							filter="true" 
+							widgetVar="empresasFiltroVar">
+							<f:selectItems  value="#{previsaoComprasRel.filtroEmpresa()}" var="empresas" itemLabel="#{empresas.label}" itemValue="#{empresas.value}"   />
+							<p:ajax event="toggleSelect" update="empresasFiltro, unidadesFiltro, marcasFiltro, categoriasFiltro, produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+							<p:ajax event="change" oncomplete="PF('empresasFiltroVar').show()" update="empresasFiltro, unidadesFiltro, marcasFiltro, categoriasFiltro, produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+						</p:selectCheckboxMenu>
+						<p:spacer width="10" />
+						<p:selectCheckboxMenu id="unidadesFiltro"  
+							widgetVar="unidadesFiltroVar"
+							value="#{previsaoComprasRel.listUnidadeEmpresaAux}" 
+							label="#{previsaoComprasRel.lbUnidadeEmpresaFiltro}"
+							filter="true">
+							<f:selectItems value="#{previsaoComprasRel.filtroUnidadeEmpresa()}" var="unidades" itemLabel="#{unidades.label}" itemValue="#{unidades.value}" />
+							<p:ajax event="toggleSelect"  update="unidadesFiltro ,marcasFiltro, categoriasFiltro, produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+							<p:ajax event="change" oncomplete="PF('unidadesFiltroVar').show()" update="unidadesFiltro, marcasFiltro, categoriasFiltro, produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+						</p:selectCheckboxMenu>
+						<p:spacer width="10" />
+						<p:selectCheckboxMenu id="marcasFiltro" 
+							value="#{previsaoComprasRel.listMarcaDistribuidorAux}" 
+							label="#{previsaoComprasRel.lbMarcaFiltro}" 
+							widgetVar="marcasFiltroVar"
+							filter="true">
+							<f:selectItems value="#{previsaoComprasRel.filtroMarcaDistribuidor()}" var="marcas" itemLabel="#{marcas.label}" itemValue="#{marcas.value}" />
+							<p:ajax event="toggleSelect" update="marcasFiltro, produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+							<p:ajax event="change" oncomplete="PF('marcasFiltroVar').show()" update="marcasFiltro, produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+						</p:selectCheckboxMenu>
+						<p:spacer width="10" />
+						<p:selectCheckboxMenu id="categoriasFiltro"
+							value="#{previsaoComprasRel.listProdutoCategoriaAux}" 
+							label="#{previsaoComprasRel.lbCategoriaFiltro}"
+							widgetVar="categoriasFiltroVar"
+							filter="true">
+							<f:selectItems value="#{previsaoComprasRel.filtroProdutoCategoria()}" var="categorias" itemLabel="#{categorias.label}" itemValue="#{categorias.value}" />
+							<p:ajax event="toggleSelect" update="categoriasFiltro, produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+							<p:ajax event="change" oncomplete="PF('categoriasFiltroVar').show()" update="categoriasFiltro, produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+						</p:selectCheckboxMenu>
+						<p:spacer width="10" />
+						<p:selectCheckboxMenu id="produtosFiltro" 
+							value="#{previsaoComprasRel.listProdutoDistribuidorAux}" 
+							label="#{previsaoComprasRel.lbProdutoFiltro}"
+							widgetVar="produtosFiltroVar"
+							filter="true">
+							<f:selectItems value="#{previsaoComprasRel.filtroProdutoDistribuidor()}" var="produtos" itemLabel="#{produtos.label}" itemValue="#{produtos.value}" />
+							<p:ajax event="toggleSelect" update="produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+							<p:ajax event="change" oncomplete="PF('produtosFiltroVar').show()" update="produtosFiltro" listener="#{previsaoComprasRel.exeFiltro()}" />
+						</p:selectCheckboxMenu>
+						<div style="float: right">
+							<p:outputLabel value="Data" for="data"  style="padding-right: 10px" />
+							<p:calendar id="data" widgetVar="diaInicioVar" size="10" navigator="true" value="#{previsaoComprasRel.datData}" locale="pt" showOn="button" pattern="dd/MM/yyyy">
+								<p:ajax event="dateSelect" />
+							</p:calendar>
+						</div>
+					</p:panel>
+				</p:tab>
+			</p:accordionPanel>
+			
+			<p:panel id="pnRel" header="Relatório" styleClass="panelRelatorio Container100 ShadowEffect ui-noborder" style="padding: 0px !important;">
+				<p:dataTable id="tbRelatorio" 
+					styleClass="slim ui-noborder" 
+					emptyMessage="Nenhum registro encontrado" 
+					var="registroVar" 
+					value="#{previsaoComprasRel.previsaoComprasDs.registros}" 
+					reflow="true" 
+					rowKey="#{registroVar.codEmpresa}"
+					selectionMode="single"
+					paginator="true"
+					paginatorPosition="bottom" 
+					widgetVar="tbRelatorioVar"					
+					currentPageReportTemplate="({currentPage} de {totalPages})"
+					rowsPerPageTemplate="10, 20, 30"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rows="10">
+				    
+					<p:column sortBy="#{registroVar.codEmpresa}" headerText="Cód." width="6%" filterBy="#{registroVar.codEmpresa}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.codEmpresa}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.nomEmpresa}" headerText="Empresa" width="10%" filterBy="#{registroVar.nomEmpresa}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.nomEmpresa}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.nomUnidadeEmpresa}" headerText="Unidade Empresa" width="12%" filterBy="#{registroVar.nomUnidadeEmpresa}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.nomUnidadeEmpresa}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.nomProduto}" headerText="Produto" width="12%" filterBy="#{registroVar.nomProduto}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.nomProduto}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.nomCategoria}" headerText="Categoria" width="12%" filterBy="#{registroVar.nomCategoria}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.nomCategoria}" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdEmpresa}" headerText="Qtd. Empresa"  filterBy="#{registroVar.qtdEmpresa}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdEmpresa}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdPedido}" headerText="Qtd. Pedido"  filterBy="#{registroVar.qtdPedido}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdPedido}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdRemessa}" headerText="Qtd. Remessa"  filterBy="#{registroVar.qtdRemessa}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdRemessa}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdTotal}" headerText="Qtd. Total"  filterBy="#{registroVar.qtdTotal}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdTotal}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdMediaVenda}" headerText="Média Venda"  filterBy="#{registroVar.qtdMediaVenda}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdMediaVenda}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdDiasEmpresa}" headerText="Dias Empresa"  filterBy="#{registroVar.qtdDiasEmpresa}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdDiasEmpresa}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdDiasPedido}" headerText="Dias Pedido"  filterBy="#{registroVar.qtdDiasPedido}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdDiasPedido}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdDiasRemessa}" headerText="Dias Remessa"  filterBy="#{registroVar.qtdDiasRemessa}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdDiasRemessa}" style="float:right" />
+					</p:column>
+					
+					<p:column sortBy="#{registroVar.qtdDiasTotal}" headerText="Dias Total"  filterBy="#{registroVar.qtdDiasTotal}" styleClass="Fs12">
+						<h:outputText value="#{registroVar.qtdDiasTotal}" style="float:right" />
+					</p:column>
+				
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
